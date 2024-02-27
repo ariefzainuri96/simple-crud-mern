@@ -15,9 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProductById = exports.updateProductById = exports.getProductById = exports.getProducts = exports.addProduct = void 0;
 const product_model_1 = __importDefault(require("../models/product_model"));
 const helper_1 = require("../utils/helper");
+const common_functions_1 = require("../common/common_functions");
 const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const product = yield product_model_1.default.create(req.body);
+        const { name, quantity, price } = req.body;
+        const product = yield product_model_1.default.create({
+            user_id: req.user.id,
+            name: name,
+            quantity: quantity,
+            price: price
+        });
         res.status(200).json({
             status: 200,
             message: 'Successfully add product',
@@ -25,13 +32,15 @@ const addProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     catch (error) {
-        sendError(res, 500, (0, helper_1.handleError)(error));
+        (0, common_functions_1.sendError)(res, (0, helper_1.handleStatus)(error), (0, helper_1.handleError)(error));
     }
 });
 exports.addProduct = addProduct;
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const products = yield product_model_1.default.find({});
+        const products = yield product_model_1.default.find({
+            user_id: req.user.id
+        });
         res.status(200).json({
             status: 200,
             message: 'Successfully fetch products',
@@ -39,7 +48,7 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
     catch (error) {
-        sendError(res, 500, (0, helper_1.handleError)(error));
+        (0, common_functions_1.sendError)(res, (0, helper_1.handleStatus)(error), (0, helper_1.handleError)(error));
     }
 });
 exports.getProducts = getProducts;
@@ -48,7 +57,7 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const { id } = req.params;
         const product = yield product_model_1.default.findById(id);
         if (!product) {
-            return sendError(res, 404, 'Product not found');
+            return (0, common_functions_1.sendError)(res, 404, 'Product not found');
         }
         res.status(200).json({
             status: 200,
@@ -57,7 +66,7 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
     }
     catch (error) {
-        sendError(res, 500, (0, helper_1.handleError)(error));
+        (0, common_functions_1.sendError)(res, (0, helper_1.handleStatus)(error), (0, helper_1.handleError)(error));
     }
 });
 exports.getProductById = getProductById;
@@ -66,7 +75,7 @@ const updateProductById = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const { id } = req.params;
         const product = yield product_model_1.default.findByIdAndUpdate(id, req.body);
         if (!product) {
-            return sendError(res, 404, 'Product not found!');
+            return (0, common_functions_1.sendError)(res, 404, 'Product not found!');
         }
         const updatedProduct = yield product_model_1.default.findById(id);
         res.status(200).json({
@@ -76,7 +85,7 @@ const updateProductById = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
     }
     catch (error) {
-        sendError(res, 500, (0, helper_1.handleError)(error));
+        (0, common_functions_1.sendError)(res, (0, helper_1.handleStatus)(error), (0, helper_1.handleError)(error));
     }
 });
 exports.updateProductById = updateProductById;
@@ -85,7 +94,7 @@ const deleteProductById = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const { id } = req.params;
         const product = yield product_model_1.default.findByIdAndDelete(id);
         if (!product) {
-            return sendError(res, 404, 'Product not found');
+            return (0, common_functions_1.sendError)(res, 404, 'Product not found');
         }
         res.status(200).json({
             status: 200,
@@ -94,13 +103,7 @@ const deleteProductById = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
     }
     catch (error) {
-        sendError(res, 500, (0, helper_1.handleError)(error));
+        (0, common_functions_1.sendError)(res, (0, helper_1.handleStatus)(error), (0, helper_1.handleError)(error));
     }
 });
 exports.deleteProductById = deleteProductById;
-function sendError(res, status, err) {
-    res.status(status).json({
-        status: status,
-        message: (0, helper_1.handleError)(err)
-    });
-}

@@ -1,7 +1,11 @@
 import express from 'express'
 import { getProducts, addProduct, getProductById, updateProductById, deleteProductById } from '../controllers/product_controller'
+import { validateToken } from '../middleware/validate_token'
 
 const router = express.Router()
+
+// validate token for all request in this routes
+router.use(validateToken)
 
 // add product
 router.post('/', addProduct)

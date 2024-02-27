@@ -6,11 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const product_route_1 = __importDefault(require("../routes/product_route"));
+const user_route_1 = __importDefault(require("../routes/user_route"));
 require("dotenv/config");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use(loggerMiddleware);
+// app.use(loggerMiddleware)
 app.use('/api/products', product_route_1.default);
+app.use('/api/users', user_route_1.default);
 // greetings
 app.get('/', (_, res) => {
     res.send('Hello world');

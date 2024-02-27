@@ -2,6 +2,11 @@ import mongoose from "mongoose"
 
 const ProductSchema = new mongoose.Schema(
     {
+        user_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: [true, 'Please add user_id'],
+            ref: 'User'
+        },
         name: {
             type: String,
             required: [true, 'Please enter product name!']
